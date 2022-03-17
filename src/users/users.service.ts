@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./entities/user.entity";
@@ -14,15 +14,19 @@ export class UsersService {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   create(createUserDto: CreateUserDto) {
-    return this.users.push(createUserDto);
+    const user = this.users.push(createUserDto);
+    return user;
   }
 
-  findAll() {
-    return this.users;
+  findAll(name?: string) {
+    if (name == '') {
+      return new NotFoundException('name must b e given');
+    }
+    this.users.filter((user) => user.name == name);
   }
 
   findOne(id: number) {
-    return this.users[id];
+    this.users.filter((user) => user.id == id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
@@ -30,6 +34,6 @@ export class UsersService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return 'removed successfully';
   }
 }

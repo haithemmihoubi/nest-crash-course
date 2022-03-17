@@ -1,14 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { User } from "./entities/user.entity";
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  getUserByName(@Query('name') name: string) {
+    return this.usersService.findAll({ name });
+  }
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
     type: User,
@@ -17,10 +22,7 @@ export class UsersController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
-  @ApiCreatedResponse({
-    description: 'The list of users',
-    type: [User],
-  })
+  @ApiOkResponse({ type: User, isArray: true })
   @Get()
   findAll() {
     return this.usersService.findAll();
