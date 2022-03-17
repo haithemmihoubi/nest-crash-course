@@ -12,7 +12,7 @@ export class UsersController {
 
   @Get()
   getUserByName(@Query('name') name: string) {
-    return this.usersService.findAll({ name });
+    return this.usersService.findAll(name);
   }
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
